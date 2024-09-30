@@ -17,7 +17,7 @@ app.post("/process-video", (req, res) => {
     return;
   }
 
-  // Convert video to 360p
+  // Convert video to 720p
   ffmpeg(inputFilePath)
     .outputOptions("-vf", "scale=-1:720")
     .on("end", () => {
