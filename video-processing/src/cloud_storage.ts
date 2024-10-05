@@ -1,19 +1,36 @@
 // This file interacts with GCS (Google Cloud Storage) files and local files
+import ffmpeg from "fluent-ffmpeg";
 import { Storage } from "@google-cloud/storage";
 import fs from "fs";
-import ffmpeg from "fluent-ffmpeg";
-import { PassThrough } from "stream";
+// import { PassThrough } from "stream";
 
 const storage = new Storage();
-const rawVideoBucket = "kloding-raw-yt-videos";
-const processedVideoBucket = "kloding-processed-yt-videos";
 const localRawVideoPath = "./raw-videos";
 const localProcessedVideoPath = "./processed-videos";
+const rawVideoBucket = "kloding-raw-yt-videos";
+const processedVideoBucket = "kloding-processed-yt-videos";
+
+/**
+ * Creates a directory if it does not already exist.
+ * @param {string} directoryName - name of the directory
+ */
+function ensureDirectoryExists(directoryName: string) {
+  if (!fs.existsSync(directoryName)) {
+    fs.mkdirSync(directoryName, { recursive: true });
+    console.log(`Directory ${directoryName} successfully created`);
+  } else {
+    console.log(`Directory ${directoryName} exists`);
+  }
+}
 
 /**
  * Creates local directories for raw and processed videos
  */
-export function createDirectories() {}
+
+export function createDirectories() {
+  ensureDirectoryExists(localRawVideoPath);
+  ensureDirectoryExists(localProcessedVideoPath);
+}
 
 /**
  * Converts a locally stored video to 720p.
@@ -77,7 +94,7 @@ export async function uploadProcessedVideo(filename: string): Promise<any> {
 }
 
 /**
- * 
+ *
  * @param {string} filename - file to be deleted
  * @returns {Promise} - promise that is resolved if the video is successfully deleted
  * or does not exist and is rejected otherwise
@@ -91,8 +108,8 @@ function deleteFile(filename: string): Promise<void> {
           console.log(`An error occurred: ${err}`);
           reject(err);
         } else {
-            console.log(`${filename} successfully deleted`);
-            resolve();
+          console.log(`${filename} successfully deleted`);
+          resolve();
         }
       });
     } else {

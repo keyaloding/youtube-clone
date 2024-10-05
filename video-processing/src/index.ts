@@ -1,11 +1,15 @@
 import express from "express";
 import ffmpeg from "fluent-ffmpeg";
+import { createDirectories } from "./cloud_storage";
 
 const app = express();
 app.use(express.json());
 
+createDirectories();
+
 app.post("/process-video", (req, res) => {
   // This gets the path of the input video file from the body of the request
+  let data;
   const inputFilePath = req.body.inputFilePath;
   const outputFilePath = req.body.outputFilePath;
 
